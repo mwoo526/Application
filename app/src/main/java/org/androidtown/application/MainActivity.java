@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -40,6 +41,7 @@ import noman.googleplaces.PlacesListener;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener ,PlacesListener {
 
+    TextView textView;
     ImageButton imageButton1,imageButton2,imageButton3,imageButton4;
     EditText editText;
     SupportMapFragment mapfragment;
@@ -57,6 +59,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         ActionBar actionBar= getSupportActionBar();
         actionBar.hide();
+
+        Intent intent = getIntent();
+        String name = intent.getStringExtra("name");
+        textView=(TextView)findViewById(R.id.textView);
+        textView.setText(name+" 님 ");
 
         imageButton1 = (ImageButton)findViewById(R.id.imageButton1);
         imageButton2 = (ImageButton)findViewById(R.id.imageButton2);
@@ -113,7 +120,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.imageButton1:
-
+                Intent intent = new Intent(this,DetailActivity.class);
+                startActivity(intent);
                 break;
 
             case R.id.imageButton2:
@@ -139,12 +147,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.imageButton4:
                 //
-                /*try {*/
+                try {
                 showPlaceInformation(currentPosition);
-                /*}
+                }
                 catch (Exception e){
                     Toast.makeText(getApplicationContext(),"위치설정을 한후 건물밖으로 나오세요.",Toast.LENGTH_SHORT).show();
-                }*/
+                }
                 break;
 
         }
@@ -265,7 +273,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         //showMarker(location);
     }
-    // 음식점 위치 marker 로 표시하기
+
+    // DB에 저장된 맛집 주소를 받아와 marker 로 표시
     private void showMarker(Location location){
         if(marker ==null ) {
             marker = new MarkerOptions();
@@ -281,6 +290,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
+    // onPause(), onResume() 상태일때도 계속적으로 나의 위치 추적
     @Override
     protected void onPause() {
         super.onPause();

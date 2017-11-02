@@ -40,6 +40,7 @@ public class SplashActivity extends AppCompatActivity implements Animation.Anima
     // 위치 설정
     void AnimationTranslate(){
         anim = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.translate);
+        anim.setInterpolator(AnimationUtils.loadInterpolator(this,android.R.anim.accelerate_interpolator));
         imageView2.startAnimation(anim);
 
     }
@@ -52,7 +53,7 @@ public class SplashActivity extends AppCompatActivity implements Animation.Anima
 
     @Override
     public void onAnimationEnd(Animation animation) {
-        Intent intent= new Intent(getApplicationContext(),MainActivity.class);
+        Intent intent= new Intent(getApplicationContext(),LoginActivity.class);
         startActivity(intent);
     }
 
