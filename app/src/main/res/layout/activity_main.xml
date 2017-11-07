@@ -57,7 +57,8 @@
             app:srcCompat="@drawable/serach" />
 
 
-        <!-- 밑줄 지워주는 코드-->
+        <!-- 밑줄 지워주는 코드
+        android:background="@null"-->
         <EditText
             android:id="@+id/editText"
             android:layout_width="220dp"

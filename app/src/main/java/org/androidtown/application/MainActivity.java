@@ -29,6 +29,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.androidtown.application.helper.BackHelper;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -40,6 +42,8 @@ import noman.googleplaces.PlacesException;
 import noman.googleplaces.PlacesListener;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener ,PlacesListener {
+
+    private BackHelper backHelper;
 
     TextView textView;
     ImageButton imageButton1,imageButton2,imageButton3,imageButton4;
@@ -93,6 +97,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         catch (Exception e){
             e.printStackTrace();
         }
+
+        backHelper=new BackHelper(this);
 
         //Permission();
 
@@ -305,6 +311,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if(map !=null){
             map.setMyLocationEnabled(true);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        backHelper.onBackPressed();
     }
 
 //////////////// placesListener 구현

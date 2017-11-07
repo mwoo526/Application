@@ -1,5 +1,6 @@
 package org.androidtown.application;
 
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -54,7 +55,8 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
                 break;
 
             case R.id.button2:
-
+                Intent intent = new Intent(this,ReviewActivity.class);
+                startActivity(intent);
                 break;
 
             case R.id.button3:

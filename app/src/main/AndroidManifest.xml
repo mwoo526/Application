@@ -19,6 +19,10 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
+    <!--SD카드 접근 권한-->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+
     <!-- OpenGL 사용 설정 -->
     <uses-feature
         android:glEsVersion="0x00020000"
@@ -48,7 +52,10 @@
             android:name="com.google.android.gms.vision"
             android:value="@integer/google_play_services_version" />
 
-        <activity android:name=".SplashActivity">
+        <activity
+            android:name=".CameraActivity"
+            android:configChanges="orientation|screenSize|keyboard|keyboardHidden"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -57,7 +64,11 @@
         </activity>
         <activity android:name=".LoginActivity" />
         <activity android:name=".MainActivity" />
-        <activity android:name=".DetailActivity"></activity>
+        <activity android:name=".DetailActivity" />
+        <activity android:name=".ReviewActivity" />
+        <activity
+            android:name=".SplashActivity"
+            ></activity>
     </application>
 
 </manifest>

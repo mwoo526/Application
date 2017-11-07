@@ -1,7 +1,10 @@
 package org.androidtown.application;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.preference.DialogPreference;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,11 +20,14 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.androidtown.application.helper.BackHelper;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class LoginActivity extends AppCompatActivity  implements View.OnClickListener{
+
+    private BackHelper backHelper;
 
     final String ip="http://13.124.233.188/process/listuser";
 
@@ -41,6 +47,8 @@ public class LoginActivity extends AppCompatActivity  implements View.OnClickLis
         editText1=(EditText)findViewById(R.id.editText1);
         editText2=(EditText)findViewById(R.id.editText2);
         button.setOnClickListener(this);
+
+        backHelper=new BackHelper(this);
 
     }
 
@@ -99,16 +107,31 @@ public class LoginActivity extends AppCompatActivity  implements View.OnClickLis
         String checkId=editText1.getText().toString();
         String checkPw=editText2.getText().toString();
 
-        if(!checkId.equals(id))
-            Toast.makeText(this, "정확한 ID를 입력해주세요", Toast.LENGTH_SHORT).show();
-
-        else if (id.equals(checkId) && pw.equals(checkPw)){
+        if (id.equals(checkId) && pw.equals(checkPw)){
             Intent intent = new Intent(this,MainActivity.class);
             intent.putExtra("Json",jObject.toString());
             intent.putExtra("name",name);
             startActivity(intent);
         }
 
+    }
+    public void showAlertDialog(){
 
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setMessage("아이디 또는 비밀번호가 맞지 않습니다.");
+        builder.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        } );
+        builder.create();
+        builder.show();
+    }
+
+    @Override
+    public void onBackPressed() {
+        backHelper.onBackPressed();
     }
 }
