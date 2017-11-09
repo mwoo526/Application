@@ -25,7 +25,7 @@ public class UploadFileHelper extends AsyncTask<String, String, String> {
     /**
      * *******  Change to your server address
      */
-    final String serverURL = "http://192.168.0.20:3000";
+    final String serverURL = "http://223.194.133.107:3000";
 
 
     final String upLoadServerUri = serverURL + "/api/photo";
