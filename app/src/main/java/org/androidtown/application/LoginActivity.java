@@ -95,7 +95,7 @@ public class LoginActivity extends AppCompatActivity  implements View.OnClickLis
                 jObject = jarray.getJSONObject(i);
                 id = jObject.getString("id");
                 pw = jObject.getString("password");
-                name = jObject.getString("name");
+                name = jObject.getString("nickname");
                 checkData(id,pw);
             }
         } catch (JSONException e) {
@@ -110,16 +110,23 @@ public class LoginActivity extends AppCompatActivity  implements View.OnClickLis
         if (id.equals(checkId) && pw.equals(checkPw)){
             Intent intent = new Intent(this,MainActivity.class);
             intent.putExtra("Json",jObject.toString());
-            intent.putExtra("name",name);
+            intent.putExtra("nickname",name);
             startActivity(intent);
+
         }
+        else {
+                showAlertDialog();
+        }
+
 
     }
     public void showAlertDialog(){
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-        builder.setMessage("아이디 또는 비밀번호가 맞지 않습니다.");
+        builder.setTitle("경고");
+        builder.setIcon(R.drawable.alert);
+        builder.setMessage("아이디 와 비밀번호를 확인해주세요.");
         builder.setPositiveButton("확인", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {

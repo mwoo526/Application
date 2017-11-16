@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -13,12 +15,18 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapsInitializer;
@@ -30,7 +38,12 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.androidtown.application.helper.BackHelper;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -43,15 +56,24 @@ import noman.googleplaces.PlacesListener;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener ,PlacesListener {
 
+    final String ip="http://13.124.233.188/process/liststore";
+
+
     private BackHelper backHelper;
 
     TextView textView;
     ImageButton imageButton1,imageButton2,imageButton3,imageButton4;
     EditText editText;
+    String storename,storetime,storeaddress,storetel;
+    JSONObject jObject;
     SupportMapFragment mapfragment;
     GoogleMap map;
     MarkerOptions marker;
     LocationManager locationManager;
+
+
+    final Geocoder geocoder = new Geocoder(this);
+
 
     //
     LatLng currentPosition;
@@ -65,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         actionBar.hide();
 
         Intent intent = getIntent();
-        String name = intent.getStringExtra("name");
+        String name = intent.getStringExtra("nickname");
         textView=(TextView)findViewById(R.id.textView);
         textView.setText(name+" 님 ");
 
@@ -73,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         imageButton2 = (ImageButton)findViewById(R.id.imageButton2);
         imageButton3 = (ImageButton)findViewById(R.id.imageButton3);
         imageButton4 = (ImageButton)findViewById(R.id.imageButton4);
-        EditText editText=(EditText) findViewById(R.id.editText);
+        editText=(EditText) findViewById(R.id.editText);
         mapfragment=(SupportMapFragment)getSupportFragmentManager().findFragmentById(R.id.mapfragment);
 
         imageButton1.setOnClickListener(this);
@@ -81,6 +103,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         imageButton3.setOnClickListener(this);
         imageButton3.setOnClickListener(this);
         imageButton4.setOnClickListener(this);
+
 
         mapfragment.getMapAsync(new OnMapReadyCallback() {
             @Override
@@ -99,6 +122,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         backHelper=new BackHelper(this);
+
 
         //Permission();
 
@@ -122,12 +146,66 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
        }
     }
 
+    public void checkRequest() {
+        StringRequest request = new StringRequest(
+                Request.Method.POST, ip,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        transformJson(response);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        error.printStackTrace();
+                    }
+                }
+        );
+        request.setShouldCache(false);
+        Volley.newRequestQueue(this).add(request);
+    }
+
+
+
+    public void transformJson(String data){
+        try{
+            JSONArray jarray = new JSONArray(data);
+            for(int i =0; i<jarray.length();i++) {
+                jObject = jarray.getJSONObject(i);
+                storename = jObject.getString("storename");
+                storetime = jObject.getString("storetime");
+                storeaddress = jObject.getString("storeaddress");
+                storetel = jObject.getString("storetel");
+
+                checkData(storename,storetime,storeaddress,storetel);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+    public void checkData(String name,String time,String address,String tel) {
+        String checkName=editText.getText().toString();
+
+        if (name.equals(checkName)){
+            Intent intent = new Intent(this,DetailActivity.class);
+            intent.putExtra("Json",jObject.toString());
+            intent.putExtra("storename",name);
+            intent.putExtra("storetime",time);
+            intent.putExtra("storeaddress",address);
+            intent.putExtra("storetel",tel);
+            startActivity(intent);
+        }
+
+
+
+    }
+
     @Override
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.imageButton1:
-                Intent intent = new Intent(this,DetailActivity.class);
-                startActivity(intent);
+                checkRequest();
                 break;
 
             case R.id.imageButton2:
@@ -277,21 +355,78 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // 축척 1~19 or 21
         map.animateCamera(CameraUpdateFactory.newLatLngZoom(curPoint, 18));
 
-        //showMarker(location);
+        checkLocation();
+
+
     }
 
+    public void checkLocation() {
+
+        StringRequest request = new StringRequest(
+                Request.Method.POST, ip,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        List<Address> address = null;
+                        List<String> list =new ArrayList<String>();
+                        try{
+                            JSONArray jarray = new JSONArray(response);
+                            for(int i =0; i<jarray.length();i++) {
+                                JSONObject jObject = jarray.getJSONObject(i);
+                                String storeaddress = jObject.getString("storeaddress");
+                                try {
+                                    list.add(storeaddress);
+                                    Log.e("test","geocoder 변환");
+                                    Log.e("test",storeaddress);
+
+                                    address = geocoder.getFromLocationName(list.get(i), 10);
+                                }
+                                catch (Exception e){
+                                    e.printStackTrace();
+                                    Log.e("test","입출력 오류 - 서버에서 주소변환시 에러발생");
+                                }
+                            }
+                                if(address!=null){
+                                    if (address.size() == 0) {
+                                       Log.e("test","해당되는 주소 정보는 없습니다");
+                                    } else {
+                                        showMarker(address.get(0).getLatitude(),address.get(0).getLongitude() ) ;    // location 객체 , 위도 ,경도
+                                    }
+                                }
+                                else{
+                                    Toast.makeText(getApplicationContext(),"해당 주소가 없습니다.",Toast.LENGTH_SHORT).show();
+                                }
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        error.printStackTrace();
+                    }
+                }
+        );
+        request.setShouldCache(false);
+        Volley.newRequestQueue(this).add(request);
+    }
+
+
     // DB에 저장된 맛집 주소를 받아와 marker 로 표시
-    private void showMarker(Location location){
+    private void showMarker(Double latitude,Double longitude){
+
         if(marker ==null ) {
             marker = new MarkerOptions();
-            marker.position(new LatLng(location.getLatitude(),location.getLongitude()));
-            marker.title(" 내 위치 ");
-            marker.snippet("GPS로 확인한 위치");
+            marker.position(new LatLng(latitude,longitude));
             marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker));
             map.addMarker(marker);
         }
         else{
-            marker.position(new LatLng(location.getLatitude(),location.getLongitude()));
+            marker.position(new LatLng(latitude,longitude));
         }
 
     }

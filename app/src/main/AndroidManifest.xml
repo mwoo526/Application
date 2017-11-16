@@ -57,7 +57,7 @@
             android:value="@integer/google_play_services_version" />
 
         <activity
-            android:name=".DetailActivity"
+            android:name=".SplashActivity"
             android:configChanges="orientation|screenSize|keyboard|keyboardHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -65,11 +65,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".LoginActivity" />
+        <activity android:name=".DetailActivity" />
         <activity android:name=".MainActivity" />
         <activity android:name=".CameraActivity" />
         <activity android:name=".ReviewActivity" />
-        <activity android:name=".SplashActivity" />
+        <activity android:name=".LoginActivity" />
         <activity android:name=".PushActivity"></activity>
 
         <service

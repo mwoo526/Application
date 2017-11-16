@@ -15,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -30,6 +31,9 @@ import com.android.volley.toolbox.Volley;
 import com.google.firebase.iid.FirebaseInstanceId;
 
 import org.androidtown.application.model.DeviceInfo;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -41,21 +45,35 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     Button button1,button2,button3,button4;
     Fragment fr;
     private boolean isFragment=true;
+    String storename,storetime,storemenu1,storemenu2,storemenu3,storeprice1,storeprice2,storeprice3,storeaddress,storetel;
+    String menu1,menu2,menu3,price1,price2,price3;
+    JSONObject jObject;
+
+    final String ip="http://13.124.233.188/process/liststore";
 
     String url="http://13.124.233.188/process/adddevice";
     String registerUrl="http://13.124.233.188/process/register";
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_detail);
         ActionBar actionBar= getSupportActionBar();
         actionBar.hide();
+        Intent intent = getIntent();
+        storename = intent.getStringExtra("storename");
+        storetime = intent.getStringExtra("storetime");
+        storeaddress = intent.getStringExtra("storeaddress");
+        storetel = intent.getStringExtra("storetel");
 
         imageView1=(ImageView)findViewById(R.id.imageButton1);
 
         textView1=(TextView)findViewById(R.id.textView1);
         textView2=(TextView)findViewById(R.id.textView2);
+        textView2.setText(storename);
 
         button1=(Button)findViewById(R.id.button1);
         button2=(Button)findViewById(R.id.button2);
@@ -69,7 +87,57 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
         getSupportFragmentManager().beginTransaction().add(R.id.detailfragment, new DetailFragment()).commit();
 
+        checkRequest();
+    }
 
+
+    public void checkRequest() {
+        StringRequest request = new StringRequest(
+                Request.Method.POST, ip,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        transformJson(response);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        error.printStackTrace();
+                    }
+                }
+        );
+        request.setShouldCache(false);
+        Volley.newRequestQueue(this).add(request);
+    }
+
+
+
+    public void transformJson(String data){
+        try{
+            JSONArray jarray = new JSONArray(data);
+            for(int i =0; i<jarray.length();i++) {
+                jObject = jarray.getJSONObject(i);
+                storename = jObject.getString("storename");
+                storemenu1 = jObject.getString("storemenu1");
+                storeprice1 = jObject.getString("storeprice1");
+                storemenu2 = jObject.getString("storemenu2");
+                storeprice2 = jObject.getString("storeprice2");
+                storemenu3 = jObject.getString("storemenu3");
+                storeprice3 = jObject.getString("storeprice3");
+                if(storename.equals((getStorename()))){
+                    menu1=storemenu1;
+                    menu2=storemenu2;
+                    menu3=storemenu3;
+                    price1=storeprice1;
+                    price2=storeprice2;
+                    price3=storeprice3;
+
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -253,6 +321,8 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
     }
 
+
+
     private void processIntent(Intent intent) {
         String data = intent.getStringExtra("data");
         if(data==null){
@@ -304,6 +374,43 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         getSupportFragmentManager().beginTransaction().replace(R.id.detailfragment,fr).commit();
     }
 
+    public String getStorename() {
+        return storename;
+    }
 
+    public String getStoretime() {
+        return storetime;
+    }
 
+    public String getStoreaddress() {
+        return storeaddress;
+    }
+
+    public String getStoretel() {
+        return storetel;
+    }
+
+    public String getMenu1() {
+        return menu1;
+    }
+
+    public String getMenu2() {
+        return menu2;
+    }
+
+    public String getMenu3() {
+        return menu3;
+    }
+
+    public String getPrice1() {
+        return price1;
+    }
+
+    public String getPrice2() {
+        return price2;
+    }
+
+    public String getPrice3() {
+        return price3;
+    }
 }

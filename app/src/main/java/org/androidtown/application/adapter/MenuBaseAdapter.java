@@ -68,4 +68,7 @@ public class MenuBaseAdapter extends BaseAdapter {
 
         menuList.add(item);
     }
+
+
+
 }
