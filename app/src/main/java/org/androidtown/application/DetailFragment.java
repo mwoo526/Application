@@ -16,13 +16,7 @@ import java.util.zip.Inflater;
 
 public class DetailFragment extends Fragment {
 
-    TextView textView1,textView2,textView3;/*
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-}*/
+    TextView textView1,textView2,textView3;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

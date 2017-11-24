@@ -45,11 +45,8 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     Button button1,button2,button3,button4;
     Fragment fr;
     private boolean isFragment=true;
-    String storename,storetime,storemenu1,storemenu2,storemenu3,storeprice1,storeprice2,storeprice3,storeaddress,storetel;
-    String menu1,menu2,menu3,price1,price2,price3;
-    JSONObject jObject;
-
-    final String ip="http://13.124.233.188/process/liststore";
+    String storename,storetime,storeaddress,storetel;
+    String storemenu1,storemenu2,storemenu3,storeprice1,storeprice2,storeprice3;
 
     String url="http://13.124.233.188/process/adddevice";
     String registerUrl="http://13.124.233.188/process/register";
@@ -68,6 +65,12 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         storetime = intent.getStringExtra("storetime");
         storeaddress = intent.getStringExtra("storeaddress");
         storetel = intent.getStringExtra("storetel");
+        storemenu1=intent.getStringExtra("storemenu1");
+        storemenu2=intent.getStringExtra("storemenu2");
+        storemenu3=intent.getStringExtra("storemenu3");
+        storeprice1=intent.getStringExtra("storeprice1");
+        storeprice2=intent.getStringExtra("storeprice2");
+        storeprice3=intent.getStringExtra("storeprice3");
 
         imageView1=(ImageView)findViewById(R.id.imageButton1);
 
@@ -87,58 +90,9 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
         getSupportFragmentManager().beginTransaction().add(R.id.detailfragment, new DetailFragment()).commit();
 
-        checkRequest();
+
     }
 
-
-    public void checkRequest() {
-        StringRequest request = new StringRequest(
-                Request.Method.POST, ip,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        transformJson(response);
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        error.printStackTrace();
-                    }
-                }
-        );
-        request.setShouldCache(false);
-        Volley.newRequestQueue(this).add(request);
-    }
-
-
-
-    public void transformJson(String data){
-        try{
-            JSONArray jarray = new JSONArray(data);
-            for(int i =0; i<jarray.length();i++) {
-                jObject = jarray.getJSONObject(i);
-                storename = jObject.getString("storename");
-                storemenu1 = jObject.getString("storemenu1");
-                storeprice1 = jObject.getString("storeprice1");
-                storemenu2 = jObject.getString("storemenu2");
-                storeprice2 = jObject.getString("storeprice2");
-                storemenu3 = jObject.getString("storemenu3");
-                storeprice3 = jObject.getString("storeprice3");
-                if(storename.equals((getStorename()))){
-                    menu1=storemenu1;
-                    menu2=storemenu2;
-                    menu3=storemenu3;
-                    price1=storeprice1;
-                    price2=storeprice2;
-                    price3=storeprice3;
-
-                }
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
 
     @Override
     public void onClick(View view) {
@@ -151,6 +105,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
             case R.id.button2:
                 Intent intent = new Intent(this,ReviewActivity.class);
+                intent.putExtra("storename",storename);
                 startActivity(intent);
                 break;
 
@@ -374,10 +329,6 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         getSupportFragmentManager().beginTransaction().replace(R.id.detailfragment,fr).commit();
     }
 
-    public String getStorename() {
-        return storename;
-    }
-
     public String getStoretime() {
         return storetime;
     }
@@ -390,27 +341,27 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         return storetel;
     }
 
-    public String getMenu1() {
-        return menu1;
+    public String getStoremenu1() {
+        return storemenu1;
     }
 
-    public String getMenu2() {
-        return menu2;
+    public String getStoremenu2() {
+        return storemenu2;
     }
 
-    public String getMenu3() {
-        return menu3;
+    public String getStoreprice1() {
+        return storeprice1;
     }
 
-    public String getPrice1() {
-        return price1;
+    public String getStoreprice2() {
+        return storeprice2;
     }
 
-    public String getPrice2() {
-        return price2;
+    public String getStoremenu3() {
+        return storemenu3;
     }
 
-    public String getPrice3() {
-        return price3;
+    public String getStoreprice3() {
+        return storeprice3;
     }
 }

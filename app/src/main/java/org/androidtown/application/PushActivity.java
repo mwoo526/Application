@@ -28,7 +28,6 @@ public class PushActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_push);
 
-
         textView=(TextView)findViewById(R.id.textView);
 
     }

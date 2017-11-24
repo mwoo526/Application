@@ -25,9 +25,6 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
     Button button1;
     String photoPath = null; // 촬영 결과물이 저장될 경로
     Bitmap bmp = null;  // 메모리로 로드한 이미지가 저장될 객체
-    final int REQUEST_READ_FROM_EXTERNAL_STORAGE = 1;
-    File dir;
-    TextView messageText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

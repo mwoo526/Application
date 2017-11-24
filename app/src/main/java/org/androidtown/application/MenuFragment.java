@@ -41,9 +41,9 @@ public class MenuFragment extends ListFragment {
 
     public void addItem(){
 
-        adapter.addItem(((DetailActivity)getActivity()).getMenu1(),((DetailActivity)getActivity()).getPrice1());
-        adapter.addItem(((DetailActivity)getActivity()).getMenu2(),((DetailActivity)getActivity()).getPrice2());
-        adapter.addItem(((DetailActivity)getActivity()).getMenu3(),((DetailActivity)getActivity()).getPrice3());
+        adapter.addItem(((DetailActivity)getActivity()).getStoremenu1(),((DetailActivity)getActivity()).getStoreprice1());
+        adapter.addItem(((DetailActivity)getActivity()).getStoremenu2(),((DetailActivity)getActivity()).getStoreprice2());
+        adapter.addItem(((DetailActivity)getActivity()).getStoremenu3(),((DetailActivity)getActivity()).getStoreprice3());
 
     }
 

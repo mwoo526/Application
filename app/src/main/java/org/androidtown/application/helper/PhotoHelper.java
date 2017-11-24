@@ -36,7 +36,7 @@ public class PhotoHelper {
     public String getNewPhotoPath(){
         Calendar c = Calendar.getInstance();
         int yy = c.get(Calendar.YEAR);
-        int mm = c.get(Calendar.MONTH)-1;
+        int mm = c.get(Calendar.MONTH)+1;
         int dd = c.get(Calendar.DAY_OF_MONTH);
         int hh = c.get(Calendar.HOUR_OF_DAY);
         int mi = c.get(Calendar.MINUTE);

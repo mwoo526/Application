@@ -65,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     ImageButton imageButton1,imageButton2,imageButton3,imageButton4;
     EditText editText;
     String storename,storetime,storeaddress,storetel;
+    String storemenu1,storemenu2,storemenu3,storeprice1,storeprice2,storeprice3;
     JSONObject jObject;
     SupportMapFragment mapfragment;
     GoogleMap map;
@@ -177,14 +178,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 storetime = jObject.getString("storetime");
                 storeaddress = jObject.getString("storeaddress");
                 storetel = jObject.getString("storetel");
+                storemenu1 = jObject.getString("storemenu1");
+                storemenu2 = jObject.getString("storemenu2");
+                storemenu3 = jObject.getString("storemenu3");
+                storeprice1 = jObject.getString("storeprice1");
+                storeprice2 = jObject.getString("storeprice2");
+                storeprice3 = jObject.getString("storeprice3");
 
-                checkData(storename,storetime,storeaddress,storetel);
+                checkData(storename,storetime,storeaddress,storetel,storemenu1,storemenu2,storemenu3,storeprice1,storeprice2,storeprice3);
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
-    public void checkData(String name,String time,String address,String tel) {
+    public void checkData(String name,String time,String address,String tel,String menu1,String menu2,String menu3,String price1, String price2,String price3) {
         String checkName=editText.getText().toString();
 
         if (name.equals(checkName)){
@@ -194,6 +201,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             intent.putExtra("storetime",time);
             intent.putExtra("storeaddress",address);
             intent.putExtra("storetel",tel);
+            intent.putExtra("storemenu1",menu1);
+            intent.putExtra("storemenu2",menu2);
+            intent.putExtra("storemenu3",menu3);
+            intent.putExtra("storeprice1",price1);
+            intent.putExtra("storeprice2",price2);
+            intent.putExtra("storeprice3",price3);
             startActivity(intent);
         }
 
@@ -367,7 +380,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        List<Address> address = null;
+                        List<Address> address = new ArrayList<>();
                         List<String> list =new ArrayList<String>();
                         try{
                             JSONArray jarray = new JSONArray(response);
@@ -376,21 +389,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 String storeaddress = jObject.getString("storeaddress");
                                 try {
                                     list.add(storeaddress);
-                                    Log.e("test","geocoder 변환");
-                                    Log.e("test",storeaddress);
-
+                                    Log.d("test",list.get(i));
                                     address = geocoder.getFromLocationName(list.get(i), 10);
+                                                                                                            // 지역이름 , 읽을 개수
                                 }
                                 catch (Exception e){
                                     e.printStackTrace();
                                     Log.e("test","입출력 오류 - 서버에서 주소변환시 에러발생");
                                 }
                             }
+
                                 if(address!=null){
                                     if (address.size() == 0) {
                                        Log.e("test","해당되는 주소 정보는 없습니다");
                                     } else {
-                                        showMarker(address.get(0).getLatitude(),address.get(0).getLongitude() ) ;    // location 객체 , 위도 ,경도
+                                       for(int i=0; i<address.size();i++)
+                                        showMarker(address.get(i).getLatitude(),address.get(i).getLongitude() ) ;    // location 객체 , 위도 ,경도*/
+
+                                        //showMarker(address.get(0).getLatitude(),address.get(0).getLongitude() ) ;
                                     }
                                 }
                                 else{
@@ -419,16 +435,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     // DB에 저장된 맛집 주소를 받아와 marker 로 표시
     private void showMarker(Double latitude,Double longitude){
 
-        if(marker ==null ) {
+     //   if(marker ==null ) {
             marker = new MarkerOptions();
             marker.position(new LatLng(latitude,longitude));
             marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker));
             map.addMarker(marker);
-        }
+       /* }
         else{
             marker.position(new LatLng(latitude,longitude));
         }
-
+*/
     }
 
     // onPause(), onResume() 상태일때도 계속적으로 나의 위치 추적
