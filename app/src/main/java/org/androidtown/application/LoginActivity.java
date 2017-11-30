@@ -29,7 +29,8 @@ public class LoginActivity extends AppCompatActivity  implements View.OnClickLis
 
     private BackHelper backHelper;
 
-    final String ip="http://13.124.233.188/process/listuser";
+   // final String ip="http://13.124.233.188/process/listuser";
+    final String ip="http://192.168.0.20:3000/process/listuser";
 
     Button button;
     EditText editText1,editText2;
@@ -96,29 +97,27 @@ public class LoginActivity extends AppCompatActivity  implements View.OnClickLis
                 id = jObject.getString("id");
                 pw = jObject.getString("password");
                 name = jObject.getString("nickname");
-                checkData(id,pw);
+                //checkData(id,pw);
+
+                String checkId=editText1.getText().toString();
+                String checkPw=editText2.getText().toString();
+
+                if (id.equals(checkId) && pw.equals(checkPw)){
+                    Intent intent = new Intent(this,MainActivity.class);
+                    intent.putExtra("Json",jObject.toString());
+                    intent.putExtra("nickname",name);
+                    startActivity(intent);
+                    break;
+                }
+                else {
+                    showAlertDialog();
+
+                }
+
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
-    }
-
-    public void checkData(String id, String pw) {
-        String checkId=editText1.getText().toString();
-        String checkPw=editText2.getText().toString();
-
-        if (id.equals(checkId) && pw.equals(checkPw)){
-            Intent intent = new Intent(this,MainActivity.class);
-            intent.putExtra("Json",jObject.toString());
-            intent.putExtra("nickname",name);
-            startActivity(intent);
-
-        }
-        else {
-                showAlertDialog();
-        }
-
-
     }
     public void showAlertDialog(){
 

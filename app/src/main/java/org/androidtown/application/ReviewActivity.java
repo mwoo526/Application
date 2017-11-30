@@ -27,7 +27,8 @@ public class ReviewActivity extends AppCompatActivity implements View.OnClickLis
     EditText editText1,editText2,editText3;
     ImageButton imageButton;
     Button button;
-    String url="http://13.124.233.188/process/listreview";
+    //String url="http://13.124.233.188/process/listreview";
+    String url="http://192.168.0.20:3000/process/listreview";
     String storename,reviewtitle,reviewcontent,reviewscore;
 
     @Override
