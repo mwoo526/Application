@@ -3,9 +3,15 @@ package org.androidtown.application;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
+import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -19,7 +25,10 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,18 +44,31 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class DetailActivity extends AppCompatActivity implements View.OnClickListener{
 
     ImageView imageView1;
     TextView textView1,textView2;
+
     Button button1,button2,button3,button4;
     Fragment fr;
     private boolean isFragment=true;
     String storename,storetime,storeaddress,storetel;
     String storemenu1,storemenu2,storemenu3,storeprice1,storeprice2,storeprice3;
+    String file;
+    String baseurl;
+    Bitmap bitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,22 +88,55 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         storeprice1=intent.getStringExtra("storeprice1");
         storeprice2=intent.getStringExtra("storeprice2");
         storeprice3=intent.getStringExtra("storeprice3");
-
-        imageView1=(ImageView)findViewById(R.id.imageButton1);
-
+        file=intent.getStringExtra("file");
+        baseurl="http://13.124.233.188/"+file;;
+        imageView1=(ImageView)findViewById(R.id.imageView1);
         textView1=(TextView)findViewById(R.id.textView1);
         textView2=(TextView)findViewById(R.id.textView2);
-        textView2.setText(storename);
-
         button1=(Button)findViewById(R.id.button1);
         button2=(Button)findViewById(R.id.button2);
         button3=(Button)findViewById(R.id.button3);
         button4=(Button)findViewById(R.id.button4);
 
+
         button1.setOnClickListener(this);
         button2.setOnClickListener(this);
         button3.setOnClickListener(this);
         button4.setOnClickListener(this);
+
+        textView2.setText(storename);
+
+        //안드로이드에서 네트워크 관련 작업을 할때는 별도의 작업 스레드에서 작업해야한다.
+
+        Thread mThread = new Thread(){
+            @Override
+            public void run() {
+                try{
+                    URL url = new URL(baseurl);
+                    // URL 주소를 이용해서 URL 객체 생성
+
+                    HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+                    conn.setDoInput(true);
+                    conn.connect();
+
+                    InputStream is = conn.getInputStream();
+                    bitmap = BitmapFactory.decodeStream(is);
+                    //웹에서 이미지를 가져온뒤 이미지뷰에 지정할 Bitmap을 생성하는 과정
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        mThread.start(); //웹에서 이미지를 가져오는 작업 스레드 실행
+        try{
+            mThread.join();
+            // 메인 스레드는 작업 스레드가 이미지 작업을 가져올때까지 대기해야 하므로
+            // 작업 스레드 의 join() 메소드를 호출해서
+            // 메인 스레드가 작업 스레드가 종료될때까지 기다린다.
+            imageView1.setImageBitmap(bitmap);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         getSupportFragmentManager().beginTransaction().add(R.id.detailfragment, new DetailFragment()).commit();
 
@@ -93,7 +148,10 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.button1:
-
+                Intent intent1=new Intent(this,ImageActivity.class);
+                intent1.putExtra("storename",storename);
+                startActivity(intent1);
+                break;
 
             case R.id.button2:
                 Intent intent = new Intent(this,ReviewActivity.class);
@@ -112,8 +170,11 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
                 button4.setVisibility(View.INVISIBLE);
                 button3.setVisibility(View.VISIBLE);
                 break;
+
         }
     }
+
+
 
     // 상세정보 프레그먼트와 메뉴 프레그먼트를 교체
     private void switchFragment() {

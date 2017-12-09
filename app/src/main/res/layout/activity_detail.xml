@@ -16,7 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="180dp"
             android:scaleType="fitXY"
-            app:srcCompat="@drawable/background" />
+           />
 
         <ImageView
             android:id="@+id/imageView2"
@@ -36,16 +36,28 @@
             android:visibility="invisible" />
     </FrameLayout>
 
-    <TextView
-        android:id="@+id/textView2"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp"
         android:layout_marginTop="30dp"
-        android:gravity="center"
-        android:text="음식점 명"
-        android:textSize="30sp"
-        android:textStyle="bold" />
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="음식점 명"
+            android:textSize="30sp"
+            android:textStyle="bold" />
+
+
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -61,7 +73,7 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="10dp"
             android:background="@drawable/xml_oval"
-            android:text="예약" />
+            android:text="리뷰포토" />
 
         <Button
             android:id="@+id/button2"
@@ -69,7 +81,7 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="5dp"
             android:background="@drawable/xml_oval"
-            android:text="평가/리뷰" />
+            android:text="리뷰평가" />
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -81,14 +93,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/xml_oval"
-                android:text="메뉴" />
+                android:text="맛집메뉴" />
 
             <Button
                 android:id="@+id/button4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/xml_oval"
-                android:text="정보"
+                android:text="맛집정보"
                 android:visibility="invisible" />
 
         </FrameLayout>

@@ -66,12 +66,12 @@ import noman.googleplaces.PlacesListener;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener ,PlacesListener {
 
-    //final String ip="http://13.124.233.188/process/liststore";
-    final String ip="http://192.168.0.20:3000/process/liststore";
-    //String url="http://13.124.233.188/process/adddevice";
-    String url="http://192.168.0.20:3000/process/adddevice";
-    //String registerUrl="http://13.124.233.188/process/register";
-    String registerUrl="http://192.168.0.20:3000/process/register";
+    final String ip="http://13.124.233.188/process/liststore";
+    //final String ip="http://192.168.0.20:3000/process/liststore";
+    String url="http://13.124.233.188/process/adddevice";
+    //String url="http://192.168.0.20:3000/process/adddevice";
+    String registerUrl="http://13.124.233.188/process/register";
+    //String registerUrl="http://192.168.0.20:3000/process/register";
 
     private BackHelper backHelper;
 
@@ -80,6 +80,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     EditText editText;
     String storename,storetime,storeaddress,storetel;
     String storemenu1,storemenu2,storemenu3,storeprice1,storeprice2,storeprice3;
+    String file;
     JSONObject jObject;
     SupportMapFragment mapfragment;
     GoogleMap map;
@@ -251,6 +252,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 storeprice1 = jObject.getString("storeprice1");
                 storeprice2 = jObject.getString("storeprice2");
                 storeprice3 = jObject.getString("storeprice3");
+                file = jObject.getString("file");
 
                 String checkName=editText.getText().toString();
 
@@ -266,7 +268,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             .putExtra("storemenu3",storemenu3)
                             .putExtra("storeprice1",storeprice1)
                             .putExtra("storeprice2",storeprice2)
-                            .putExtra("storeprice3",storeprice3);
+                            .putExtra("storeprice3",storeprice3)
+                            .putExtra("file",file);
                     startActivity(intent);
                     break;
                 }
@@ -560,7 +563,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     @Override
                     public void onResponse(String response) {
                         try {
-                            //Toast.makeText(getApplicationContext(),response,Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(),response,Toast.LENGTH_SHORT).show();
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -666,7 +669,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     @Override
                     public void onResponse(String response) {
                         try {
-                            //Toast.makeText(getApplicationContext(),response,Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(),response,Toast.LENGTH_SHORT).show();
                         } catch (Exception e) {
                             e.printStackTrace();
                         }

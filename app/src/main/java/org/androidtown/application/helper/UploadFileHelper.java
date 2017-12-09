@@ -25,11 +25,11 @@ public class UploadFileHelper extends AsyncTask<String, String, String> {
     /**
      * *******  Change to your server address
      */
-    //final String serverURL = "http://13.124.233.188";
-    final String serverURL = "http://192.168.0.20:3000";
+    final String serverURL = "http://13.124.233.188";
+    //final String serverURL = "http://192.168.0.20:3000";
 
 
-    final String upLoadServerUri = serverURL + "/upload";
+    final String upLoadServerUri = serverURL + "/reviewUpload";
     Activity activity;
 
     public UploadFileHelper(Activity activity) {

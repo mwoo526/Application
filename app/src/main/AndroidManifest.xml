@@ -88,9 +88,11 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".ReserveActivity"
-            android:launchMode="singleTop"
-            android:exported = "true"></activity>
+        <activity
+            android:name=".ReserveActivity"
+            android:exported="true"
+            android:launchMode="singleTop" />
+        <activity android:name=".ImageActivity"></activity>
     </application>
 
 </manifest>
