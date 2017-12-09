@@ -1,5 +1,9 @@
 package org.androidtown.application;
 
+import android.app.AlarmManager;
+import android.app.DatePickerDialog;
+import android.app.PendingIntent;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -25,11 +29,13 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -39,6 +45,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.firebase.iid.FirebaseInstanceId;
 
+import org.androidtown.application.helper.DateTimeHelper;
 import org.androidtown.application.model.DeviceInfo;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -52,8 +59,10 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class DetailActivity extends AppCompatActivity implements View.OnClickListener{
@@ -62,6 +71,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     TextView textView1,textView2;
 
     Button button1,button2,button3,button4;
+    ImageButton imageButton1;
     Fragment fr;
     private boolean isFragment=true;
     String storename,storetime,storeaddress,storetel;
@@ -69,6 +79,13 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     String file;
     String baseurl;
     Bitmap bitmap;
+
+    private java.util.Calendar EditCal;
+    private int Year,Month,Day,Starthour,Startmin;
+    int EditYear;
+    int EditMonth;
+    int EditDay;
+    int YEAR =0, MONTH=0,DAY=0,HOUR=0,MINUTE=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,12 +114,27 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         button2=(Button)findViewById(R.id.button2);
         button3=(Button)findViewById(R.id.button3);
         button4=(Button)findViewById(R.id.button4);
+        imageButton1=(ImageButton)findViewById(R.id.imageButton1);
 
+        EditCal = java.util.Calendar.getInstance(Locale.KOREA);
+        EditYear = EditCal.get(java.util.Calendar.YEAR);
+        EditMonth = EditCal.get(java.util.Calendar.MONTH);
+        EditDay = EditCal.get(java.util.Calendar.DAY_OF_MONTH);
+
+        int[] date = DateTimeHelper.getInstance().getDate();
+        YEAR=date[0];
+        MONTH=date[1];
+        DAY=date[2];
+
+        int[] time = DateTimeHelper.getInstance().getTime();
+        HOUR=time[0];
+        MINUTE=time[1];
 
         button1.setOnClickListener(this);
         button2.setOnClickListener(this);
         button3.setOnClickListener(this);
         button4.setOnClickListener(this);
+        imageButton1.setOnClickListener(this);
 
         textView2.setText(storename);
 
@@ -171,9 +203,116 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
                 button3.setVisibility(View.VISIBLE);
                 break;
 
+            case R.id.imageButton1:
+                dateAlarm();
+
+                break;
+
         }
     }
 
+    public class AlarmHATT { // Manifest 부분에 진동, 홀드상태 활성화 두개의 퍼미션 추가
+        Context context;
+        public AlarmHATT(Context context) {
+            this.context=context;
+        }
+        public void Alarm() {
+            AlarmManager am = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+            Intent intent = new Intent(DetailActivity.this, Receiver.class);
+            intent.putExtra("title",storename);
+            intent.putExtra("address",storeaddress);
+            intent.putExtra("opentime",Starthour+"시 "+Startmin+"분");
+            PendingIntent sender = PendingIntent.getBroadcast(DetailActivity.this, 0, intent, 0 );
+            Calendar cal;
+            cal= Calendar.getInstance(Locale.KOREA);
+            cal.set(Calendar.YEAR,Year);
+            cal.set(Calendar.MONTH,Month);
+            cal.set(Calendar.DAY_OF_MONTH,Day);
+            cal.set(Calendar.HOUR_OF_DAY, Starthour);
+            cal.set(Calendar.MINUTE, Startmin-30); //30분전 푸시알림
+            cal.set(Calendar.SECOND,00);
+            //알람 예약
+            am.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), sender);
+            Log.e("alarm",Year+" / "+Month+1 +" / "+Day+" / "+Starthour+" / "+Startmin );
+            if(Starthour<=12)
+                Toast.makeText(getApplicationContext(), "오전  "+Starthour+"시 "+Startmin+"분"+"  예약 되엇습니다.",Toast.LENGTH_LONG).show();
+            if(Starthour>12)
+                Starthour-=12;
+                Toast.makeText(getApplicationContext(), "오후  "+Starthour+"시 "+Startmin+"분"+"  예약 되엇습니다.",Toast.LENGTH_LONG).show();
+
+        }
+    }
+    void dateAlarm(){
+        final int temp_yy = YEAR;
+        final int temp_mm = MONTH;
+        final int temp_dd = DAY;
+
+        DatePickerDialog dialog= new DatePickerDialog(this,new DatePickerDialog.OnDateSetListener(){
+
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayofMonth) {
+                StartDate(year,monthOfYear,dayofMonth);
+                timeAlarm();
+            }
+        },YEAR,MONTH,DAY);
+
+        dialog.setOnCancelListener(new DialogInterface.OnCancelListener(){
+
+            @Override
+            public void onCancel(DialogInterface dialogInterface) {
+                YEAR=temp_yy;
+                MONTH=temp_mm;
+                DAY=temp_dd;
+            }
+        });
+        dialog.setTitle("예약 알림설정");
+        dialog.setIcon(R.drawable.alarm);
+        dialog.setMessage("예약날짜을 선택하세요");
+        dialog.show();
+
+    }
+
+
+    void timeAlarm()
+    {
+
+        final int temp_hh = HOUR;
+        final int temp_mi = MINUTE;
+
+        TimePickerDialog dialog = new TimePickerDialog(this,new TimePickerDialog.OnTimeSetListener(){
+            @Override
+            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                StartTime( hourOfDay,  minute);
+                new AlarmHATT(getApplicationContext()).Alarm();
+
+            }
+        },HOUR,MINUTE,false);
+
+        dialog.setOnCancelListener(new DialogInterface.OnCancelListener(){
+
+            @Override
+            public void onCancel(DialogInterface dialogInterface) {
+                HOUR=temp_hh;
+                MINUTE=temp_mi;
+            }
+        });
+
+        dialog.setTitle("예약 알림설정");
+        dialog.setIcon(R.drawable.alarm);
+        dialog.setMessage("예약시간을 선택하세요");
+        dialog.show();
+    }
+
+    public void StartDate(int year, int monthOfYear, int dayofMonth){
+        Year=year;
+        Month=monthOfYear;
+        Day=dayofMonth;
+    }
+
+    public void StartTime(int hourOfDay, int minute){
+        Starthour=hourOfDay;
+        Startmin=minute;
+    }
 
 
     // 상세정보 프레그먼트와 메뉴 프레그먼트를 교체

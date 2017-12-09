@@ -26,6 +26,9 @@
     <!-- SD카드 접근 권한 -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <!--진동,알림-->
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
 
     <!-- OpenGL 사용 설정 -->
     <uses-feature
@@ -93,6 +96,7 @@
             android:exported="true"
             android:launchMode="singleTop" />
         <activity android:name=".ImageActivity"></activity>
+        <receiver android:name=".Receiver"></receiver>
     </application>
 
 </manifest>

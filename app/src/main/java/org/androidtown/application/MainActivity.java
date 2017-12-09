@@ -1,6 +1,7 @@
 package org.androidtown.application;
 
 import android.Manifest;
+
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -26,6 +27,7 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -53,9 +55,11 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+
 import java.util.Map;
 
 import noman.googleplaces.NRPlaces;
@@ -86,6 +90,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     GoogleMap map;
     MarkerOptions marker;
     LocationManager locationManager;
+    String title="그라지에";
+    String address="주소";
+
+
+
 
     //Geocoder
     final Geocoder geocoder = new Geocoder(this);
@@ -697,5 +706,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Volley.newRequestQueue(getApplicationContext()).add(request);
 
     }
+
+
+
 
 }
