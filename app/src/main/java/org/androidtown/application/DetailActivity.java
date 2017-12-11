@@ -12,44 +12,23 @@ import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.net.wifi.WifiInfo;
-import android.net.wifi.WifiManager;
-import android.os.Build;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.telephony.TelephonyManager;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.DatePicker;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-import com.google.firebase.iid.FirebaseInstanceId;
-
 import org.androidtown.application.helper.DateTimeHelper;
-import org.androidtown.application.model.DeviceInfo;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.androidtown.application.model.Receiver;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -57,13 +36,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 public class DetailActivity extends AppCompatActivity implements View.OnClickListener{
 
@@ -71,7 +47,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     TextView textView1,textView2;
 
     Button button1,button2,button3,button4;
-    ImageButton imageButton1;
+    ImageButton imageButton1,imageButton2;
     Fragment fr;
     private boolean isFragment=true;
     String storename,storetime,storeaddress,storetel;
@@ -106,7 +82,8 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         storeprice2=intent.getStringExtra("storeprice2");
         storeprice3=intent.getStringExtra("storeprice3");
         file=intent.getStringExtra("file");
-        baseurl="http://13.124.233.188/"+file;;
+        //baseurl="http://13.124.233.188/"+file;;
+        baseurl="http://192.168.0.6:3000/"+file;;
         imageView1=(ImageView)findViewById(R.id.imageView1);
         textView1=(TextView)findViewById(R.id.textView1);
         textView2=(TextView)findViewById(R.id.textView2);
@@ -115,6 +92,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         button3=(Button)findViewById(R.id.button3);
         button4=(Button)findViewById(R.id.button4);
         imageButton1=(ImageButton)findViewById(R.id.imageButton1);
+        imageButton2=(ImageButton)findViewById(R.id.imageButton2);
 
         EditCal = java.util.Calendar.getInstance(Locale.KOREA);
         EditYear = EditCal.get(java.util.Calendar.YEAR);
@@ -135,6 +113,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         button3.setOnClickListener(this);
         button4.setOnClickListener(this);
         imageButton1.setOnClickListener(this);
+        imageButton2.setOnClickListener(this);
 
         textView2.setText(storename);
 
@@ -205,11 +184,14 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
             case R.id.imageButton1:
                 dateAlarm();
-
                 break;
 
+            case R.id.imageButton2:
+                shareFacebook();
+                break;
         }
     }
+
 
     public class AlarmHATT { // Manifest 부분에 진동, 홀드상태 활성화 두개의 퍼미션 추가
         Context context;
@@ -242,7 +224,10 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
         }
     }
-    void dateAlarm(){
+
+    // 알림 구현을 위한 달력 다이얼로그
+
+    private void dateAlarm(){
         final int temp_yy = YEAR;
         final int temp_mm = MONTH;
         final int temp_dd = DAY;
@@ -272,8 +257,8 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
     }
 
-
-    void timeAlarm()
+    // 알림 구현을 위한 타이머 다이얼로그
+    private void timeAlarm()
     {
 
         final int temp_hh = HOUR;
@@ -313,6 +298,53 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         Starthour=hourOfDay;
         Startmin=minute;
     }
+
+
+    // 페이스북 공유
+    private void shareFacebook() {
+
+        View view = getWindow().getDecorView().getRootView();
+        view.buildDrawingCache();
+        Bitmap captureView = view.getDrawingCache();
+
+        File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
+        if(!dir.exists()) dir.mkdir();
+        String ad = dir.getAbsolutePath()+"" + "capture.jpeg";
+        FileOutputStream fos;
+        try{
+            fos = new FileOutputStream(ad);
+            captureView.compress(Bitmap.CompressFormat.JPEG,100,fos);
+        }catch (FileNotFoundException e){
+            e.printStackTrace();
+        }
+
+        Uri uri = Uri.fromFile(new File(ad));
+        Intent intent= new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_STREAM,uri);
+        intent.setType("image/*");
+
+        PackageManager packManager = DetailActivity.this.getPackageManager(); // mcontext
+        List<ResolveInfo> resolvedInfoList = packManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+
+        boolean resolved = false;
+        for(ResolveInfo resolveInfo: resolvedInfoList) {
+            if(resolveInfo.activityInfo.packageName.startsWith("com.facebook.katana")){
+                intent.setClassName(
+                        resolveInfo.activityInfo.packageName,
+                        resolveInfo.activityInfo.name );
+                resolved = true;
+                break;
+            }
+        }
+        if(resolved) {
+            startActivity(Intent.createChooser(intent,"공유"));
+
+        } else {
+            Toast.makeText(this , "페이스북 앱이 없습니다.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
 
 
     // 상세정보 프레그먼트와 메뉴 프레그먼트를 교체

@@ -45,7 +45,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.food)
                 .setContentTitle("Food Trip")
-                .setContentText("\' "+store+" \'음식점 예약 알림이 왔습니다.")
+                .setContentText("\' "+store+" \'예약 시간 30분 전입니다.")
                 .setAutoCancel(true)
                 .setSound(defaultSoundUri)
                 .setContentIntent(pendingIntent)

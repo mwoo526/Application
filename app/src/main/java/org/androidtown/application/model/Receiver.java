@@ -1,4 +1,4 @@
-package org.androidtown.application;
+package org.androidtown.application.model;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -9,6 +9,9 @@ import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
+
+import org.androidtown.application.R;
+import org.androidtown.application.SplashActivity;
 
 /**
  * Created by MinWoo on 2017-12-09.
@@ -29,7 +32,7 @@ public class Receiver extends BroadcastReceiver {
                 .setContentTitle("Food Trip")
                 .setWhen(System.currentTimeMillis())
                 .setNumber(1)
-                .setContentText("예약 시간 30분 전입니다")
+                .setContentText("예약 시간 30분 전입니다.")
                 .setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE)
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true);

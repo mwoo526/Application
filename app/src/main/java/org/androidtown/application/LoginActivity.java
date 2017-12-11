@@ -29,8 +29,9 @@ public class LoginActivity extends AppCompatActivity  implements View.OnClickLis
 
     private BackHelper backHelper;
 
-    final String ip="http://13.124.233.188/process/listuser";
+    //final String ip="http://13.124.233.188/process/listuser";
     //final String ip="http://192.168.0.20:3000/process/listuser";
+    final String ip="http://192.168.0.6:3000/process/listuser";
 
     Button button;
     EditText editText1,editText2;

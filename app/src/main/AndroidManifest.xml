@@ -96,7 +96,7 @@
             android:exported="true"
             android:launchMode="singleTop" />
         <activity android:name=".ImageActivity"></activity>
-        <receiver android:name=".Receiver"></receiver>
+        <receiver android:name=".model.Receiver"></receiver>
     </application>
 
 </manifest>

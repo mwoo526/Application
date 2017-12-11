@@ -38,7 +38,8 @@ public class ImageActivity extends AppCompatActivity implements CompoundButton.O
 
     String storename;
     String reviewstore,file;
-    final String ip="http://13.124.233.188/process/listreview";
+    //final String ip="http://13.124.233.188/process/listreview";
+    final String ip="http://192.168.0.6:3000/process/listreview";
     JSONObject jObject;
     ArrayList<String> fileList = new ArrayList<>();
     ViewFlipper flipper;
@@ -100,7 +101,8 @@ public class ImageActivity extends AppCompatActivity implements CompoundButton.O
                 public void run() {
                     try{
                         for(int j=0;j<fileList.size();j++) {
-                            URL url = new URL("http://13.124.233.188/" + fileList.get(j));
+                            //URL url = new URL("http://13.124.233.188/" + fileList.get(j));
+                            URL url = new URL("http://192.168.0.6:3000/" + fileList.get(j));
                             // URL 주소를 이용해서 URL 객체 생성
 
                             HttpURLConnection conn = (HttpURLConnection) url.openConnection();

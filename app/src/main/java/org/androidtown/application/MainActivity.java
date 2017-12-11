@@ -70,12 +70,15 @@ import noman.googleplaces.PlacesListener;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener ,PlacesListener {
 
-    final String ip="http://13.124.233.188/process/liststore";
+    //final String ip="http://13.124.233.188/process/liststore";
     //final String ip="http://192.168.0.20:3000/process/liststore";
-    String url="http://13.124.233.188/process/adddevice";
+    final String ip="http://192.168.0.6:3000/process/liststore";
+    //String url="http://13.124.233.188/process/adddevice";
     //String url="http://192.168.0.20:3000/process/adddevice";
-    String registerUrl="http://13.124.233.188/process/register";
+    String url="http://192.168.0.6:3000/process/adddevice";
+    //String registerUrl="http://13.124.233.188/process/register";
     //String registerUrl="http://192.168.0.20:3000/process/register";
+    String registerUrl="http://192.168.0.6:3000/process/register";
 
     private BackHelper backHelper;
 
@@ -92,7 +95,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     LocationManager locationManager;
     String title="그라지에";
     String address="주소";
-
 
 
 
