@@ -32,11 +32,12 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     }
 
     private void sendToActivity(Context context, String store/*, String date*/ , String hour , String  minute) {
-        Intent intent = new Intent(context, ReserveActivity.class);
-        intent.putExtra("store", store);
+        //Intent intent = new Intent(context, ReserveActivity.class);
+        //intent.putExtra("store", store);
         //intent.putExtra("date", date);
-        intent.putExtra("hour", hour);
-        intent.putExtra("minute", minute);
+        //intent.putExtra("hour", hour);
+        //intent.putExtra("minute", minute);
+        Intent intent = new Intent(context, SplashActivity.class);
 
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
